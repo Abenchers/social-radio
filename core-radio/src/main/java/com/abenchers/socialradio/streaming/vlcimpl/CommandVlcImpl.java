@@ -8,6 +8,12 @@ import com.abenchers.socialradio.streaming.CommandInterface;
 
 
 public class CommandVlcImpl implements CommandInterface {
+	private static final String INPUT = "input";
+	private static final String HTTP = "http://";
+	private static final String BROADCAST_ENABLED = " broadcast enabled";
+	private static final String OUTPUT = "output";
+	private static final String DST = "dst=";
+	private static final String NAME_ALREADY_IN_USE = "Name already in use";
 	private static final String PUBLIC_URL = "10.255.49.20:1234";
 	private static final String SPLIT_CHAR = " : ";
 	private static final String NEW_LINE = "\\r?\\n";
@@ -33,20 +39,20 @@ public class CommandVlcImpl implements CommandInterface {
 	public String start(String channel) throws Exception {
 		String url = PUBLIC_URL + "/" + UUID.randomUUID();
 		connect();
-		String response=vlc.sendCommand(NEW + channel + " broadcast enabled");
-		if(response.contains("Name already in use")){
+		String response=vlc.sendCommand(NEW + channel + BROADCAST_ENABLED);
+		if(response.contains(NAME_ALREADY_IN_USE)){
 			url="";
 			String[] splitString = response.split(NEW_LINE);
 			for (String string : splitString) {
-				if(string.contains("output")){
-					String[] song = string.split("dst=");
+				if(string.contains(OUTPUT)){
+					String[] song = string.split(DST);
 					url=song[1].trim();
 				}
 			}
-			return "http://" + url;
+			return HTTP + url;
 		}else{
 			vlc.sendCommand(SETUP + channel + OUTPUT_STANDARD + url + "}");
-			return "http://" + url;
+			return HTTP + url;
 		}
 	}
 
@@ -84,13 +90,13 @@ public class CommandVlcImpl implements CommandInterface {
 		int listFlag = 0;
 
 		for (String string : splitString) {
-			if (string.contains("input")) {
+			if (string.contains(INPUT)) {
 				listFlag = 1;
 			}
-			if (string.contains("output")) {
+			if (string.contains(OUTPUT)) {
 				listFlag = 0;
 			}
-			if (listFlag == 1 && !string.contains("input")) {
+			if (listFlag == 1 && !string.contains(INPUT)) {
 				String[] song = string.split(SPLIT_CHAR);
 				playlist.add(song[1].trim());
 			}
