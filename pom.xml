@@ -8,5 +8,6 @@
   <modules>
   	<module>web-radio</module>
   	<module>core-radio</module>
+  	<module>playback</module>
   </modules>
 </project>
