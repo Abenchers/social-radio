@@ -5,7 +5,9 @@ import java.io.IOException;
 
 import org.apache.commons.net.telnet.TelnetClient;
 import org.apache.commons.net.telnet.TelnetNotificationHandler;
+import org.springframework.stereotype.Component;
 
+@Component("vlcContol")
 public class VLCControl extends TelnetClient implements Runnable,
 		TelnetNotificationHandler {
 

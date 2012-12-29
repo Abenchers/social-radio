@@ -1,5 +1,8 @@
 package com.abenchers.socialradio.common;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Track {
 
 	private String trackId;
@@ -13,6 +16,7 @@ public class Track {
 	private String performer;
 	private String albumPerformer;
 	private String genre;
+	
 
 	public String getTrackId() {
 		return trackId;

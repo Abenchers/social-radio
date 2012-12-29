@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	
+<h:head>
+	<title>JSF 2.0 Hello World</title>
+	
+</h:head>
+
+
+<h:body>
+	<h3>JSF 2.0 Hello World Example - hello.xhtml</h3>
+	<h:form>
+		<h:selectOneMenu value="#{getValues.selected}">
+			<f:selectItems value="#{getValues.list}" />
+		</h:selectOneMenu>
+		<p:fileUpload mode="siple" value="#{getValues.fileToAdd}"
+			fileUploadListener="#{getValues.fileToAdd}"
+			allowTypes="/(mp3|ogg|wav)$/" />
+
+		<p:commandButton value="Ajax Submit" id="ajax"
+			actionListener="#{getValues.showSelectedFolder}" />
+
+		
+
+	</h:form>
+	
+<input id="file_input" type="file" webkitdirectory directory />
+</h:body>
+	<script type="text/javascript">
+			fs.root.getDirectory('Documents', {}, function(dirEntry) {
+				var dirReader = dirEntry.createReader();
+				dirReader.readEntries(function(entries) {
+					for ( var i = 0; i < entries.length; i++) {
+						var entry = entries[i];
+						if (entry.isDirectory) {
+							console.log('Directory: ' + entry.fullPath);
+						} else if (entry.isFile) {
+							console.log('File: ' + entry.fullPath);
+						}
+					}
+	
+				}, errorHandler);
+			}, errorHandler);
+	
+			window.requestFileSystem(window.TEMPORARY, 1024 * 1024, onInitFs,
+					errorHandler);
+		</script>
+</html>

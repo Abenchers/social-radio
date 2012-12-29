@@ -1,1 +1,1 @@
-<jsp:forward page="welcome.yaxche" />
+<jsp:forward page="view/home.xhtml" />

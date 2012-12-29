@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.abenchers.socialradio.streaming.CommandInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.abenchers.socialradio.streaming.service.CommandInterface;
 
 public class CommandVlcImpl implements CommandInterface {
 	private static final String INPUT = "input";
@@ -14,7 +15,7 @@ public class CommandVlcImpl implements CommandInterface {
 	private static final String OUTPUT = "output";
 	private static final String DST = "dst=";
 	private static final String NAME_ALREADY_IN_USE = "Name already in use";
-	private static final String PUBLIC_URL = "10.255.49.20:1234";
+
 	private static final String SPLIT_CHAR = " : ";
 	private static final String NEW_LINE = "\\r?\\n";
 	private static final String OUTPUT_STANDARD = " output #standard{access=http,mux=ogg,dst=";
@@ -25,32 +26,37 @@ public class CommandVlcImpl implements CommandInterface {
 	private static final String PLAY = " play";
 	private static final String CONTROL = "control ";
 	private static final String SHOW = "show ";
-	private static final String LOCALHOST = "localhost";
-	private static final String PASSWORD = "admin";
-	private VLCControl vlc = new VLCControl();
 
+	private static final String PASSWORD = "admin";
 	
+	@Autowired
+	private VLCControl vlc;
+
+	private String vlcServiceStreamPublicURL;
+	private String vlcServiceStreamPublicPort;
+	private String vlcServiceStreamHost;
+
 	public void add(String channel, String file) throws Exception {
 		connect();
 		vlc.sendCommand(SETUP + channel + " input " + file);
 	}
 
-	
 	public String start(String channel) throws Exception {
-		String url = PUBLIC_URL + "/" + UUID.randomUUID();
+		String url = vlcServiceStreamPublicURL +":" + vlcServiceStreamPublicPort
+				+ "/" + UUID.randomUUID();
 		connect();
-		String response=vlc.sendCommand(NEW + channel + BROADCAST_ENABLED);
-		if(response.contains(NAME_ALREADY_IN_USE)){
-			url="";
+		String response = vlc.sendCommand(NEW + channel + BROADCAST_ENABLED);
+		if (response.contains(NAME_ALREADY_IN_USE)) {
+			url = "";
 			String[] splitString = response.split(NEW_LINE);
 			for (String string : splitString) {
-				if(string.contains(OUTPUT)){
+				if (string.contains(OUTPUT)) {
 					String[] song = string.split(DST);
-					url=song[1].trim();
+					url = song[1].trim();
 				}
 			}
 			return HTTP + url;
-		}else{
+		} else {
 			vlc.sendCommand(SETUP + channel + OUTPUT_STANDARD + url + "}");
 			return HTTP + url;
 		}
@@ -58,30 +64,26 @@ public class CommandVlcImpl implements CommandInterface {
 
 	public void connect() throws Exception {
 		if (!vlc.isConnected()) {
-			vlc.connect(LOCALHOST, 4212);
+			vlc.connect(vlcServiceStreamHost, 4212);
 			vlc.sendCommand(PASSWORD);
 		}
 	}
 
-	
 	public void clear(String channel) throws Exception {
 		connect();
 		vlc.sendCommand(SETUP + channel + INPUTDEL_ALL);
 	}
 
-	
 	public void play(String channel) throws Exception {
 		connect();
 		vlc.sendCommand(CONTROL + channel + PLAY);
 	}
 
-	
 	public void stop(String channel) throws Exception {
 		connect();
 		vlc.sendCommand(CONTROL + channel + STOP);
 	}
 
-	
 	public List<String> getPlaylist(String channel) throws Exception {
 		connect();
 		List<String> playlist = new ArrayList<String>();
@@ -104,7 +106,6 @@ public class CommandVlcImpl implements CommandInterface {
 		return playlist;
 	}
 
-	
 	public Long getRemainingTime(String channel) throws Exception {
 		connect();
 		long timeL = 0;
@@ -126,11 +127,34 @@ public class CommandVlcImpl implements CommandInterface {
 		return lengthL - timeL;
 	}
 
-	
 	public boolean isPlaying(String channel) throws Exception {
 		connect();
 		String response = vlc.sendCommand(SHOW + channel);
 		return response.contains("playing");
+	}
+
+	public String getVlcServiceStreamPublicURL() {
+		return vlcServiceStreamPublicURL;
+	}
+
+	public void setVlcServiceStreamPublicURL(String vlcServiceStreamPublicURL) {
+		this.vlcServiceStreamPublicURL = vlcServiceStreamPublicURL;
+	}
+
+	public String getVlcServiceStreamPublicPort() {
+		return vlcServiceStreamPublicPort;
+	}
+
+	public void setVlcServiceStreamPublicPort(String vlcServiceStreamPublicPort) {
+		this.vlcServiceStreamPublicPort = vlcServiceStreamPublicPort;
+	}
+
+	public String getVlcServiceStreamHost() {
+		return vlcServiceStreamHost;
+	}
+
+	public void setVlcServiceStreamHost(String vlcServiceStreamHost) {
+		this.vlcServiceStreamHost = vlcServiceStreamHost;
 	}
 
 }
