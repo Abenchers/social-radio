@@ -1,6 +1,5 @@
 package com.abenchers.socialradio.jsffiles;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -9,7 +8,6 @@ import javax.faces.bean.SessionScoped;
 import org.elasticsearch.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
 import com.abenchers.socialradio.common.Track;
 import com.abenchers.socialradio.common.TrackSearch;
@@ -28,31 +26,32 @@ import com.abenchers.socialradio.usermanager.common.UserManagerRequest;
 import com.abenchers.socialradio.usermanager.common.UserManagerResponse;
 import com.abenchers.socialradio.usermanager.service.UserManagerService;
 
-@Component
-@ManagedBean
-@SessionScoped
-public class GetValues implements Serializable {
+//@Component
+//@ManagedBean
+//@SessionScoped
+public class GetValues{
+
 
 	private static final String SOCIAL_LIST = "socialList";
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	@Autowired
+	//@ManagedProperty(value="#{LocalResourceDAO}")
 	private LocalResourceDAO localResource;
 
 	@Autowired
+	//@ManagedProperty(value="#{ResourceManagerContentInformation}")
 	private ResourceManagerContentInformation resourceManager;
 
 	@Autowired
+	//@ManagedProperty(value="#{UserDAO}")
 	private UserDAO userDAO;
 
 	@Autowired
+	//@ManagedProperty(value="#{PlayListManagerService}")
 	private PlayListManagerService playListManagerService;
 
 	@Autowired
+	//@ManagedProperty(value="#{UserManagerService}")
 	private UserManagerService userManagerService;
 
 	private String selected;

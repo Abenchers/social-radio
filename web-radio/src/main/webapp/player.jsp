@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-<!-- <script type="text/javascript" src="jquery-1.8.3.min.js"></script> -->
 <script type="text/javascript"
 	src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 </head>
 <body onload="load()">
 
 	<script type="text/javascript">
-		function load() {
-			setInterval(playerControl, 5000);
+		function load() {		
 			startUser('userId');
+			setInterval(playerControl, 4000);
+			playReproductor();
 		}
 
 		function startUser(userId) {
@@ -23,8 +23,9 @@
 						data : "{\"userId\":\"socialList\"}",
 						dataType : 'json',
 						success : function(data) {
-							var player = "<audio id='myPlayer' src='"+data.streamingURL+"' controls preload='auto' autoplay='autoplay' onended='startUser(userId)'></audio>";
+							var player = "<audio id='myPlayer' src='"+data.streamingURL+"' controls preload='auto' autoplay='autoplay'></audio>";
 							$('#player').html(player);
+							playReproductor();
 
 						},
 						error : function(data) {
@@ -38,10 +39,17 @@
 		function playerControl() {
 			var player = document.getElementById("myPlayer");
 			player.play;
-			if (player.paused || player.ended || 0 == player.currentTime) {
+			alert("Comparando");
+			alert("player.paused="+player.paused+" "+"player.ended"+player.ended);
+			if (player.paused || player.ended) {
 				startUser('userId');
 			}
 
+		}
+		
+		function playReproductor(){
+			var player = document.getElementById("myPlayer");
+			player.play;
 		}
 
 	</script>
